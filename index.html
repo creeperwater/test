@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>缴电费</title>
+    <style></style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form action="./" method="get" id="form">
+        <label for="building">请选择楼栋（1到10号楼）:</label>
+        <select id="building" name="building" required>
+            <option value="" disabled selected>请选择...</option>
+            <option value="1">1号楼</option>
+            <option value="2">2号楼</option>
+            <option value="3">3号楼</option>
+            <option value="4">4号楼</option>
+            <option value="5">5号楼</option>
+            <option value="6">6号楼</option>
+            <option value="7">7号楼</option>
+            <option value="8">8号楼</option>
+            <option value="9">9号楼</option>
+            <option value="10">10号楼</option>
+        </select>
+        <br><br>
+        <input type="radio" id="south" name="area" value="1" required disabled>
+        <label for="south">南楼</label>
+        <input type="radio" id="north" name="area" value="2" disabled>
+        <label for="north">北楼</label>
+        <input type="radio" id="sole" name="area" value="1" disabled>
+        <label for="sole">独栋</label>
+        <br><br>
+        <label for="room">请输入房间号:</label>
+        <input type="number" id="room" name="room" min="100" max="600" required><br><br>
+        <input type="radio" id="aircon" name="facility" value="2" required disabled>
+        <label for="aircon">空调</label>
+        <input type="radio" id="lighting" name="facility" value="1" disabled>
+        <label for="lighting">照明</label>
+        <input type="radio" id="mix" name="facility" value="1" disabled>
+        <label for="mix">混合</label>
+        <br><br>
+        <input type="submit" value="提交">
+    </form>
+    <div id="note" style="display: none;">
+        <p id="noteText"></p>
+    </div>
+</body>
+<script src="copy.js"></script>
+<script>
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    function buildingChange() {
+        if ($('building').value==7||$('building').value==8) {
+            $('sole').checked=true;
+            $('sole').disabled=false;
+            $('south').disabled=true;
+            $('north').disabled=true;
+        }else{
+            $('sole').checked=false;
+            $('sole').disabled=true;
+            $('south').disabled=false;
+            $('north').disabled=false;
+        }
+        if ($('building').value>=1&&$('building').value<=5) {
+            $('mix').checked=true;
+            $('mix').disabled=false;
+            $('aircon').disabled=true;
+            $('lighting').disabled=true;
+        }else{
+            $('mix').checked=false;
+            $('mix').disabled=true;
+            $('aircon').disabled=false;
+            $('lighting').disabled=false;
+        }
+    }
+
+    function getUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let paramsObject = {};
+        for (let [key, value] of urlParams.entries()) {
+            paramsObject[key] = value;
+        }
+        return paramsObject;
+    }
+
+    function checkAndExecuteFunction(params) {
+        if (params.building&&params.area&&params.room&&params.facility) {
+            $('form').style.display='none';
+            $('note').style.display='';
+            $('noteText').innerText=`300${params.building}${params.room}${params.area}${params.facility}`;
+        } else {
+            console.log('Missing one or more required parameters.');
+        }
+    }
+
+    checkAndExecuteFunction(getUrlParameters());
+    $('building').addEventListener('change', buildingChange);
+    
+</script>
+</html>
